@@ -1,0 +1,331 @@
+{
+  "name": "Projeto 2: Categorizando leads na planilha",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f0c2de88-ecd2-4c2b-8934-007c31929d78",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ],
+      "id": "59cb9101-10de-433f-a1a3-65b1edb7451a",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        220
+      ],
+      "id": "fcd9b48e-bbfc-4160-996a-5b3a12c8fb42",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8",
+          "mode": "list",
+          "cachedResultName": "Exemplo curso n8n jornada de dados",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "clientes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Categoria",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        200,
+        0
+      ],
+      "id": "462818a5-43d8-43bd-a91d-c2de8e79b20e",
+      "name": "LerDadosPlanilha"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4181e60b-d05a-40fe-9d4e-8fb5dcfc0cfb",
+              "name": "row_number",
+              "value": "={{ $('LerDadosPlanilha').item.json.row_number }}",
+              "type": "string"
+            },
+            {
+              "id": "81c26a3a-8bed-4b60-a31d-21651999913d",
+              "name": "categoria",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        0
+      ],
+      "id": "498f7bcc-2313-4899-8f99-e093c5f8840f",
+      "name": "SetData"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8",
+          "mode": "list",
+          "cachedResultName": "Exemplo curso n8n jornada de dados",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "clientes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Lv3ohqMpoUOvCq8wW0FAiSSiIbCrpmUbQGN2rcTnJ8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Categoria": "={{ $json.categoria }}",
+            "row_number": "={{ $json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "CPF",
+              "displayName": "CPF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Tem empresa?",
+              "displayName": "Tem empresa?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Faz faculdade?",
+              "displayName": "Faz faculdade?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Viaja quantas vezes por ano?",
+              "displayName": "Viaja quantas vezes por ano?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Quantas compras fez?",
+              "displayName": "Quantas compras fez?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Ticket médio (R$)",
+              "displayName": "Ticket médio (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categoria",
+              "displayName": "Categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1060,
+        0
+      ],
+      "id": "a5ee9a3a-1558-403b-a93c-be1ba9c6b8ab",
+      "name": "AtualizarPlanilha"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um classificador de clientes. Receba um JSON com os campos compras e ticket. Retorne apenas uma palavra, seguindo esta regra:  Se compras >= 5 e ticket >= 500: Gold Se compras >= 3: Silver Caso contrário: Green Não explique, não formate, responda apenas uma das categorias",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        440,
+        0
+      ],
+      "id": "041d1a8a-98db-47e4-924d-d29d973e62d3",
+      "name": "AI Agent Classificador",
+      "executeOnce": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "LerDadosPlanilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Classificador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LerDadosPlanilha": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Classificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetData": {
+      "main": [
+        [
+          {
+            "node": "AtualizarPlanilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Classificador": {
+      "main": [
+        [
+          {
+            "node": "SetData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b526b69e-7a65-47e9-ad75-ecfb7484d691",
+  "meta": {
+    "instanceId": "3c980eb9a6af860b9f0226fe8fc458b71427430b9f8e9b7a66aebd8dccc511f8"
+  },
+  "id": "KsUtt2zgQ6P2C2fP",
+  "tags": []
+}
