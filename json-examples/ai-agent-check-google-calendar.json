@@ -1,5 +1,5 @@
 {
-  "name": "Projeto 1: Um Agente que consulta sua agenda no Google Calendar",
+  "name": "Um Agente que consulta sua agenda no Google Calendar",
   "nodes": [
     {
       "parameters": {
