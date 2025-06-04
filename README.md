@@ -32,5 +32,6 @@ n8n/
 - [An Agent who consults his schedule on Google Calendar](/json-examples/ai-agent-check-google-calendar.json)
 - [Chatbot with Google Drive data on WhatsApp](/json-examples/ai-agent-google-drive-and-whatsapp.json)
 - [AI agent to chat with your posts gree database](/json-examples/ai-agent-query-postgree-database.json)
+- [Generate motivational message and send via telegram](/json-examples/ai-agent-telegram_message.json)
 
 > Workflows may require credentials or API keys. Be sure to configure them in your n8n instance under **Credentials**.
