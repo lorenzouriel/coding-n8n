@@ -34,6 +34,7 @@ n8n/
 - [AI agent to chat with your postgree database](/json-examples/ai-agent-query-postgree-database.json)
 - [Generate motivational message and send via Telegram](/json-examples/ai-agent-telegram_message.json)
 - [Generate motivational message with a image and send via Telegram](/json-examples/ai-agent-image-and-message-telegram.json)
+- [AI Bot on Telegram](/json-examples/ai-telegram-bot.json)
 
 > Workflows may require credentials or API keys. Be sure to configure them in your n8n instance under **Credentials**.
 
@@ -74,5 +75,6 @@ n8n/
 - [Agente de IA para conversar com seu banco de dados de postgree](/json-examples/ai-agent-query-postgree-database.json)
 - [Gerar mensagem e enviar via Telegram](/json-examples/ai-agent-telegram_message.json)
 - [Gerar mensagem e imagem e enviar via Telegram](/json-examples/ai-agent-image-and-message-telegram.json)
+- [Bot de IA no Telegram](/json-examples/ai-telegram-bot.json)
 
 > Fluxos de trabalho podem exigir credenciais ou chaves de API. Certifique-se de configurá-las na sua instância n8n em **Credenciais**.

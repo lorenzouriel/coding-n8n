@@ -1,0 +1,161 @@
+{
+  "name": "Telegram IA Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "91f4fac2-309f-49d7-a285-21b31c156876",
+      "name": "Telegram Trigger",
+      "webhookId": "61149c88-56a4-4d0d-9104-0999bcd5705b",
+      "credentials": {
+        "telegramApi": {
+          "id": "NNuft2TYslgvbvbH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are an AI assistant integrated into a Telegram Bot via n8n. Your role is to provide fast, clear, and helpful responses.\n\n🧠 Behavior:\n- Be professional, friendly, and concise.\n- Use Markdown to format your messages.\n- Always aim for clarity and relevance.\n- Keep responses short unless the user asks for detail.\n\n💡 Instructions:\n- When asked a question → respond with a clear, direct answer.\n- When asked to write, explain, summarize, or generate content → follow the user's instructions exactly.\n- If unsure or the question is ambiguous → ask for clarification.\n- If the user says \"clear\" or \"reset\" → confirm and clear the context.\n- If the user says \"help\" → show the usage guide below.\n\n🎨 Markdown Formatting Rules:\n- Use **bold** for important terms.\n- Use `code blocks` or ```text``` for technical content.\n- Use bullet points for lists.\n- Always reply in a readable layout.\n\n🤖 Example Commands:\n- \"Translate this to Spanish: Hello, how are you?\"\n- \"Summarize this text...\"\n- \"Generate a quote about teamwork.\"\n- \"What is the capital of Japan?\"\n- \"Write a short poem about space.\"\n\n📌 Stay in character and never reveal you are a language model. Always act like a smart assistant created specifically for this bot."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f4d0bcd3-4b93-4a20-ac3e-af9c5fd9590d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        160,
+        200
+      ],
+      "id": "6577b8fb-cdb1-4971-a566-7a5ca34408c6",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "Zpjkf8zcDtn4Tm9s",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "d031ee0a-2f71-4938-9844-0f514de11ac0",
+      "name": "Telegram",
+      "webhookId": "a23c5ef0-eab3-4dc3-9c8f-acd721c21bb7",
+      "credentials": {
+        "telegramApi": {
+          "id": "NNuft2TYslgvbvbH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=chat_history_{{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        200
+      ],
+      "id": "f1185775-36cb-4aa3-a054-986393155d2b",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f36232e7-a572-47f1-be5d-d5a6285e8f89",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e907193b96f596c20d9011807450e6f29d1cfae45acb3c89c54f4820333555b"
+  },
+  "id": "8Gz0mS1r8YzcINHE",
+  "tags": []
+}
