@@ -1,0 +1,330 @@
+{
+  "name": "Motivational Message Image Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Aja como um criador de conteúdo motivacional sério, com uma linguagem direta, firme e impactante. Use frases curtas, tom confrontador e verdadeiro, como se estivesse dando uma bronca com empatia. O objetivo é fazer a pessoa acordar para a realidade e tomar atitude, mesmo que doa ouvir. Escreva frases que possam ser narradas com fundo musical dramático ou tenso, ideais para vídeos de TikTok. Evite mensagens fofas ou clichês. Use expressões como “até quando…?”, “você prometeu de novo…”, “ninguém vai fazer por você…”. Fale de responsabilidade, ação, autossabotagem e disciplina. Gere de 3 a 5 frases com esse estilo.\n\nUma frase por vez, apenas envia a frase como se fosse você falando.\n\nA frase precisa ter mais de 03 sentenças e sempre separada em frases curtas para não cansar o leito.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        272,
+        256
+      ],
+      "id": "001df46e-0c82-46b0-b675-a52d6da2a5f2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        224,
+        480
+      ],
+      "id": "95f5406b-2b58-475e-bda6-d5efb3da3ebc",
+      "name": "Groq Chat Model"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        256
+      ],
+      "id": "d4736143-70e9-46ea-8f2d-255959f30f1d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db8792d7-1b8e-420c-9ad7-96106f89209b",
+              "name": "Phrase",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "f3b3805d-4434-49b7-8f5b-52568ec307c2",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        256
+      ],
+      "id": "da3c9f89-50f6-4ab5-9d40-841875e53612",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "templateId": "N1qMxz5vLP0ObeQ4ko",
+        "additionalFields": {
+          "waitForImage": true
+        },
+        "modificationsUi": {
+          "modificationsValues": [
+            {
+              "name": "message",
+              "text": "={{ $json.Phrase }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.bannerbear",
+      "typeVersion": 1,
+      "position": [
+        864,
+        256
+      ],
+      "id": "0bc17609-412c-44f6-90b5-1cbc0e109ef5",
+      "name": "Bannerbear"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "1606383725",
+        "file": "={{ $json.image_url }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1088,
+        256
+      ],
+      "id": "4b86d4f5-1837-485a-9d3a-ea3923ce88d7",
+      "name": "Telegram",
+      "webhookId": "658bd251-2d73-449e-b0f9-74de8bf31f4f"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Aja como um criador de conteúdo motivacional sério, com uma linguagem direta, firme e impactante. Use frases curtas, tom confrontador e verdadeiro, como se estivesse dando uma bronca com empatia. O objetivo é fazer a pessoa acordar para a realidade e tomar atitude, mesmo que doa ouvir. Escreva frases que possam ser narradas com fundo musical dramático ou tenso, ideais para vídeos de TikTok. Evite mensagens fofas ou clichês. Use expressões como “até quando…?”, “você prometeu de novo…”, “ninguém vai fazer por você…”. Fale de responsabilidade, ação, autossabotagem e disciplina. Gere de 3 a 5 frases com esse estilo.\n\nUma frase por vez, apenas envia a frase como se fosse você falando.\n\nA frase precisa ter mais de 06 sentenças.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        224,
+        768
+      ],
+      "id": "e306c9c5-29e2-43c8-9e68-d8a0b59feb9b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        176,
+        992
+      ],
+      "id": "9985cf46-c238-4c7d-b4fa-1fc13ac9b68c",
+      "name": "Groq Chat Model1"
+    },
+    {
+      "parameters": {
+        "chatId": "1606383725",
+        "text": "=output {{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        768
+      ],
+      "id": "04eddd2a-36dc-475f-95e8-114849cdb16d",
+      "name": "Telegram1",
+      "webhookId": "085d8642-8ae7-4893-96c0-ff628b35d1b9"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        768
+      ],
+      "id": "b7692a09-ac20-48e7-b687-7fa0b0f23bb5",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "content": "## Motivational Agent Only",
+        "height": 80,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        32,
+        672
+      ],
+      "id": "4c2d27f5-4be0-4079-8d43-fe5bdedfc1d3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Motivational Agent with Image Generation",
+        "height": 80,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        128
+      ],
+      "id": "d0f270b1-ca3c-48f8-bb69-c78bee106811",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Bannerbear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bannerbear": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1fa2aadb-b334-4ca0-888d-a4775da693da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4a78af6033b712ceb86a3dfee90d77f2d2763f2fbd45618dff7eb3902d447a68"
+  },
+  "id": "OO8F5EHiQT0tL9Ny",
+  "tags": [
+    {
+      "name": "Google Drive",
+      "id": "uPB3mk22D9vfjO0c",
+      "createdAt": "2025-08-16T22:33:28.014Z",
+      "updatedAt": "2025-08-16T22:33:28.014Z"
+    },
+    {
+      "name": "OpenAI",
+      "id": "uMqZgxPLveNOM57s",
+      "createdAt": "2025-08-16T22:33:28.037Z",
+      "updatedAt": "2025-08-16T22:33:28.037Z"
+    }
+  ]
+}

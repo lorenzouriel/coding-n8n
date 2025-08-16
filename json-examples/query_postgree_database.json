@@ -1,5 +1,5 @@
 {
-  "name": "Agente AI para conversar com o seu banco de dados posts gree",
+  "name": "AI Agent that Chats and Query PostgreSQL Database",
   "nodes": [
     {
       "parameters": {

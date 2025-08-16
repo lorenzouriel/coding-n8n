@@ -1,5 +1,5 @@
 {
-  "name": "Agente Financeiro com SQL",
+  "name": "Financial Agent with SQL (Supabase)",
   "nodes": [
     {
       "parameters": {

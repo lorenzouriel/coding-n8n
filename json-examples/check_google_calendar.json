@@ -1,5 +1,5 @@
 {
-  "name": "Um Agente que consulta sua agenda no Google Calendar",
+  "name": "Query and Help with Google Calendar",
   "nodes": [
     {
       "parameters": {

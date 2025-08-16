@@ -34,10 +34,3 @@ n8n/
 > ⚠️ Some workflows require API keys or service credentials. Set them in **Credentials** inside n8n before running.
 
 ## Workflow Examples
-* [Categorizing leads in Google Sheets](./json-examples/ai-agent-categorizing-leads-google-sheets.json)
-* [Agent checking Google Calendar](./json-examples/ai-agent-check-google-calendar.json)
-* [Chatbot with Google Drive data on WhatsApp](./json-examples/ai-agent-google-drive-and-whatsapp.json)
-* [AI agent chatting with PostgreSQL database](./json-examples/ai-agent-query-postgree-database.json)
-* [Send motivational message via Telegram](./json-examples/ai-agent-telegram_message.json)
-* [Send image + message via Telegram](./json-examples/ai-agent-image-and-message-telegram.json)
-* [Telegram AI Bot](./json-examples/ai-telegram-bot.json)
