@@ -1,0 +1,480 @@
+{
+  "name": "Agente Financeiro com SQL",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2120,
+        -200
+      ],
+      "id": "0d254991-d0d5-4e57-b9d2-0f4364e1f65e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "LxESPA7gaRJpmXmF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Whatsapp, Telegram, Slack, Teams",
+        "height": 1000,
+        "width": 360,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        720,
+        -980
+      ],
+      "typeVersion": 1,
+      "id": "c81eaca7-0d75-43b7-af54-227288c01803",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2080,
+        -680
+      ],
+      "id": "366e4c54-c3cf-4fc6-8c39-b354b207b70a",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "LxESPA7gaRJpmXmF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A seguir, você receberá uma mensagem que descreve uma despesa feita em um projeto. Extraia os seguintes campos:\n\n- Data (a data em que o gasto foi feito, no formato YYYY-MM-DD (ex: \"2025-07-07\"). Se não for especificada, use a data de hoje: {{ $now }}.\n- Descrição resumida do que foi gasto\n- Valor numérico (em reais)\n- Categoria (ex: Transporte, Refeição, Software, Escritório, Serviço, Cloud, Outro)\n- Projeto relacionado\n- Forma de Pagamento (ex: Cartão, Pix, Dinheiro, Boleto, Transferência, Não informado)\n- Resumo da operação que foi feita, para ser enviado via mensagem de confirmação por um assistente. A mensagem deve confirmar a operação de forma simpática e objetiva, como se fosse enviada por um atendente no WhatsApp.\n\nMensagem:\n{{ $json.message.text }}\n\nData de hoje:\n{{ $now }}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um assistente financeiro. Seu papel é interpretar mensagens de texto sobre despesas e extrair os dados de forma estruturada, com o objetivo de preencher automaticamente uma planilha de controle de gastos.\n\nAlém disso, você deve gerar uma frase de confirmação no campo \"resumo\", em tom simpático e direto, como se fosse um atendente humano respondendo no WhatsApp. O texto deve confirmar que a despesa foi registrada com sucesso, citando os principais dados como valor, descrição, projeto e forma de pagamento. Escreva a frase em uma única linha, sem quebras.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2140,
+        -940
+      ],
+      "id": "1f436aca-6a19-4008-91ce-f25a55b11750",
+      "name": "Agente para inserir dados"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensagem do usuário:\n{{ $json.message.text }}\nA data de hoje é:\n{{ $now }}\n",
+        "options": {
+          "systemMessage": "## Papel\nVocê é um Assistente Financeiro Pessoal que entende perguntas sobre gastos e finanças e responde com base na tabela `public.controle_financeiro` em um banco PostgreSQL.\n\n## Esquema da Tabela\nA tabela `public.controle_financeiro` contém os seguintes campos:\n\n- `id` (int8)\n- `data` (date)\n- `descricao` (varchar)\n- `valor` (float)\n- `categoria` (varchar)\n- `projeto` (varchar)\n- `forma_de_pag` (varchar)\n- `created_at` (timestamp, default: now())\n- `source` (varchar)\n\n## Objetivo\nResponder perguntas como:\n- \"Quanto eu gastei essa semana?\"\n- \"Quais foram os gastos com alimentação em junho?\"\n- \"Quanto foi gasto no projeto X em maio?\"\n\n## Boas práticas\n- Use `data` para filtros de tempo, não `created_at`\n- Use SUM para totalizar gastos\n\n## Exemplo\n1. Quanto eu gastei com alimentação?\n```\nSELECT SUM(valor) AS total_gasto\nFROM public.controle_financeiro\nWHERE categoria ILIKE '%alimentação%' OR categoria ILIKE '%refeição%';\n```\n\n2. Quais foram os gastos do projeto RedRex?\n```\nSELECT descricao, categoria, valor, data\nFROM public.controle_financeiro\nWHERE projeto ILIKE '%RedRex%';\n```\n\n\n3.Qual o total de despesas com software no ZapFlow?\n```\nSELECT SUM(valor) AS total\nFROM public.controle_financeiro\nWHERE projeto ILIKE '%ZapFlow%' AND categoria ILIKE 'software';\n```\n\n## Como responder\n\n1. Mostre o valor total (ou média, contagem, etc.)\n2. Explique o filtro aplicado (ex: mês, categoria, etc.)\n3. Seja direto e humano: \"Você gastou R\\$ X com alimentação em junho.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2120,
+        -420
+      ],
+      "id": "55984274-9e2d-4589-9772-096772f79829",
+      "name": "Agente para consultar dados"
+    },
+    {
+      "parameters": {
+        "content": "## Mensagem para inserir",
+        "height": 440,
+        "width": 1120,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1720,
+        -980
+      ],
+      "typeVersion": 1,
+      "id": "7a7049a4-5ba2-4d05-955e-f6f621cc358b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Agente de IA de consulta",
+        "height": 540,
+        "width": 1120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1720,
+        -520
+      ],
+      "typeVersion": 1,
+      "id": "87c58132-0828-43dd-84e6-6ebb5616bfd1",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Agente de classificação",
+        "height": 1000,
+        "width": 600,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1100,
+        -980
+      ],
+      "typeVersion": 1,
+      "id": "3ee276de-7069-4b14-9e7a-e7a7bc068311",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2580,
+        -420
+      ],
+      "id": "3a0dac19-854d-4f46-bfc6-86dcd6b4e7e1",
+      "name": "Telegram",
+      "webhookId": "c72fec39-5a53-4494-87f0-3947b5a703f5",
+      "credentials": {
+        "telegramApi": {
+          "id": "XQuD7uqX0CnfzleT",
+          "name": "Agente Financeiro SQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=Você vai receber uma mensagem de um usuário.\n\nClassifique a intenção da mensagem com base nas opções abaixo:\n\n- \"registro\": se o usuário estiver informando uma nova despesa\n- \"consulta\": se estiver pedindo para ver, consultar ou buscar informações financeiras anteriores\n\nResponda apenas com a palavra: \"registro\" ou \"consulta\".\n\nMensagem:\n{{ $json.message.text }}\n",
+        "categories": {
+          "categories": [
+            {
+              "category": "registro",
+              "description": "se o usuário estiver informando uma nova despesa, gasto, compra ou pagamento realizado."
+            },
+            {
+              "category": "consulta",
+              "description": "se o usuário estiver pedindo para consultar, saber, revisar ou buscar informações sobre despesas passadas."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        -640
+      ],
+      "id": "a3a05fd7-5251-48ff-9b8f-6b4f45d6c846",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1260,
+        -360
+      ],
+      "id": "e8f6dcc3-c9e4-4209-a36d-fa7e2c2f7bc0",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "LxESPA7gaRJpmXmF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"data\": \"2025-07-07\",\n  \"descricao\": \"Hospedagem para evento\",\n  \"valor\": 300.00,\n  \"categoria\": \"Serviço\",\n  \"projeto\": \"Jornada\",\n  \"forma_pagamento\": \"Pix\",\n  \"source\": \"whatsapp\",\n  \"resumo\": \"Despesa registrada: R$300,00 em 'Hospedagem para evento' no projeto Jornada, pago via Pix.\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2320,
+        -680
+      ],
+      "id": "8102aefa-f6cf-46a0-ac30-b07a561d2083",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output.resumo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2580,
+        -740
+      ],
+      "id": "f8b8a2ee-da10-4a29-8afb-2aaeff4c5ac5",
+      "name": "Telegram1",
+      "webhookId": "d83718a8-512f-46fd-afb7-621e3aaa9296",
+      "credentials": {
+        "telegramApi": {
+          "id": "XQuD7uqX0CnfzleT",
+          "name": "Agente Financeiro SQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        -640
+      ],
+      "id": "2248e793-5e24-49bc-b9c0-6287bb3a6cd0",
+      "name": "Telegram Trigger1",
+      "webhookId": "fb9e0504-4edf-412d-b1b4-1a2066e722a2",
+      "credentials": {
+        "telegramApi": {
+          "id": "XQuD7uqX0CnfzleT",
+          "name": "Agente Financeiro SQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "controle_financeiro",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "data",
+              "fieldValue": "={{ $json.output.data }}"
+            },
+            {
+              "fieldId": "descricao",
+              "fieldValue": "={{ $json.output.descricao }}"
+            },
+            {
+              "fieldId": "valor",
+              "fieldValue": "={{ $json.output.valor }}"
+            },
+            {
+              "fieldId": "categoria",
+              "fieldValue": "={{ $json.output.categoria }}"
+            },
+            {
+              "fieldId": "projeto",
+              "fieldValue": "={{ $json.output.projeto }}"
+            },
+            {
+              "fieldId": "forma_de_pagamento",
+              "fieldValue": "={{ $json.output.forma_pagamento }}"
+            },
+            {
+              "fieldId": "source",
+              "fieldValue": "telegram"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2580,
+        -940
+      ],
+      "id": "03974164-5618-4c03-9043-caba934c9f9e",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "trwvgHfaMMpm7lDZ",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "query_executer",
+        "description": "Call this tool to execute a query. Remember that it should be in a postgreSQL query structure.",
+        "workflowId": {
+          "__rl": true,
+          "value": "cvUfQNLet5rCk1qi",
+          "mode": "list",
+          "cachedResultName": "query_executer"
+        },
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"sql\": {\n      \"type\": \"string\",\n      \"description\": \"A SQL query based on the users question and database schema.\"\n    }\n  }\n}\n"
+      },
+      "id": "3093d6e3-730b-444a-b53f-aee6fe1a2013",
+      "name": "execute_query_tool",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2280,
+        -180
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente para consultar dados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente para inserir dados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente para inserir dados": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente para consultar dados": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Agente para inserir dados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente para consultar dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agente para inserir dados",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "execute_query_tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente para consultar dados",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "39b0499a-87ee-42bf-8514-0de6ea5626cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f56d2f5ba48d2ad4b177570c9770488715dd6722a50b40b69013ec823bdedd10"
+  },
+  "id": "HibLul9VJAGCptRP",
+  "tags": []
+}

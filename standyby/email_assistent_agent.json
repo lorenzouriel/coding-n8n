@@ -1,0 +1,812 @@
+{
+  "name": "E-mail Assistant Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -896,
+        1200
+      ],
+      "id": "44012ca7-ecbd-4381-a20c-eb54e408d16b",
+      "name": "Gmail Trigger"
+    },
+    {
+      "parameters": {
+        "inputText": "=Título:{{ $json.subject }}\n\nTexto: {{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Potencial Cliente",
+              "description": " E-mails com interesse comercial, propostas de parceria, orçamento, agendamento de reunião ou dúvidas sobre serviços da Red Rex ou ZapFlow.  Palavras-chave que ajudam na classificação: orçamento, proposta, parceria, reunião, consultoria, projeto, serviço, empresa"
+            },
+            {
+              "category": "Aluno da Jornada",
+              "description": "Mensagens de alunos com dúvidas sobre conteúdo de Python, N8N, SQL, acesso à plataforma, problemas com pagamento, ou suporte geral da Jornada de Dados.  Palavras-chave: acesso, dúvidas sobre curso, jornada, plataforma, pagamento, aula, inscrição, certificado"
+            },
+            {
+              "category": "Spam ou Irrelevante",
+              "description": "Descrição: E-mails genéricos, promoções automáticas, listas de e-mails ou conteúdo não solicitado.  Palavras-chave: oferta, promoção, black friday, ganhe dinheiro, última chance, sorteio, unsubscribe"
+            },
+            {
+              "category": "Importante",
+              "description": "Descrição: E-mails com informações críticas, avisos do time, problemas técnicos ou alertas de sistemas internos.  Palavras-chave: urgente, falha, erro, sistema, produção, equipe, reunião, alerta, interno"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        1184
+      ],
+      "id": "5e9720cd-0225-4de1-98fe-d4ca1c0cafde",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_2068373856055777308"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        272
+      ],
+      "id": "aa701326-10d9-42e0-a669-50da4dc45171",
+      "name": "Add label to message",
+      "webhookId": "30fa3b47-6277-4eb9-8b70-fe21362620a7"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        272
+      ],
+      "id": "2210132c-ecd7-4c0d-b509-e8450e67c422",
+      "name": "Mark a message as read",
+      "webhookId": "cfb0243c-aff7-4248-8332-a23dd45f02c8"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_4495737323413619810"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        912
+      ],
+      "id": "57f31118-46d5-4ab3-9494-3e5d615e1b22",
+      "name": "Add label to message1",
+      "webhookId": "30fa3b47-6277-4eb9-8b70-fe21362620a7"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        912
+      ],
+      "id": "ffc7b17d-647b-4043-a911-94ab8457a379",
+      "name": "Mark a message as read1",
+      "webhookId": "cfb0243c-aff7-4248-8332-a23dd45f02c8"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_5538837803574540155"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -128,
+        1392
+      ],
+      "id": "0851a34a-d8e2-4f90-a112-892839540d88",
+      "name": "Add label to message2",
+      "webhookId": "30fa3b47-6277-4eb9-8b70-fe21362620a7"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_6316710764069729256"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        1984
+      ],
+      "id": "26994209-261c-45c2-8dda-d3b6c459e303",
+      "name": "Add label to message3",
+      "webhookId": "30fa3b47-6277-4eb9-8b70-fe21362620a7"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        1984
+      ],
+      "id": "6998439d-8bc7-449c-b17a-e472bccc6549",
+      "name": "Mark a message as read3",
+      "webhookId": "cfb0243c-aff7-4248-8332-a23dd45f02c8"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -704,
+        1408
+      ],
+      "id": "887b5435-1c9b-4df6-be3f-fdd0c39c8079",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "content": "## Agente que é um pré-vendas",
+        "height": 600,
+        "width": 1820
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "238372c8-1141-4ffb-8446-8cb28e81ff28",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Meu título:{{ $('Gmail Trigger').item.json.subject }}\n\nMeu texto: {{ $('Gmail Trigger').item.json.text }}\n\nEmail de quem enviou: {{ $('Gmail Trigger').item.json.from.value[0].address }}\n\nNome de quem enviou: {{ $('Gmail Trigger').item.json.from.value[0].name }}\n\nData de envio: {{ $('Gmail Trigger').item.json.date }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um engenheiro de dados responsável por analisar demandas técnicas recebidas por e-mail, WhatsApp ou formulário. Sua função é interpretar essas solicitações e gerar um JSON com informações técnicas e comerciais para uso em CRM e pré-vendas.\nVocê deve gerar um único objeto JSON, com todos os campos em formato texto corrido, sem listas ou arrays, mesmo quando houver múltiplos itens.\nAlém dos campos técnicos e comerciais, inclua três perguntas importantes que devem ser feitas na primeira reunião com o cliente, para melhor entendimento do projeto.\n---\nO JSON deve conter os seguintes campos:\n- resumo: descrição técnica resumida da demanda\n- escopo: etapas técnicas propostas, descritas em texto corrido\n- estimativa_de_esforco: tempo estimado por fase do projeto (também em texto corrido)\n- stack_sugerida: ferramentas/tecnologias recomendadas, separadas por vírgula\n- nome: nome do solicitante\n- email: e-mail do solicitante\n- data_de_recebimento: data da solicitação no formato ISO\n- motivo_do_contato: qual foi o motivo inicial da solicitação\n- escopo_resumido: escopo técnico em uma frase\n- estimativa_resumida: tempo total estimado do projeto\n- riscos_resumidos: possíveis riscos ou obstáculos\n- perguntas_para_reuniao: três perguntas que devem ser feitas na primeira conversa, em uma única string com pontuação adequada\nAdicionalmente, gere dois novos campos no final do JSON:\n- subject: assunto do e-mail de resposta automática\n- mensagem_email: corpo do e-mail de resposta (em texto corrido), utilizando o nome do solicitante e o resumo do projeto\nUse um tom profissional e acolhedor.\nExemplo esperado:\n\"subject\": \"Sobre sua solicitação – Projeto de Dados\",\n\"mensagem_email\": \"Olá João da Silva,\\n\\nRecebemos sua solicitação e já estamos avaliando os detalhes técnicos do seu projeto. Nossa equipe de engenharia de dados preparou uma proposta inicial com base nas informações enviadas. Em breve, entraremos em contato para alinhar próximos passos.\\n\\nAtenciosamente,\\nEquipe Red Rex\\n\\n---\\nResumo do pedido: [resumo aqui]\"\n---\n**Formato de resposta esperado: apenas um JSON. Não inclua explicações ou quebras de linha.**\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        560,
+        80
+      ],
+      "id": "2178419d-7967-4c1a-bb58-88256d226933",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        400
+      ],
+      "id": "38e8f70c-7c63-4c42-a519-dc25fcf77203",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        640,
+        400
+      ],
+      "id": "9f1e6fee-3ff7-4f00-a169-beca53269d05",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"resumo\": \"Cliente deseja automatizar relatórios de vendas diários, integrando os dados do ERP interno a um sistema de dashboards atualizados automaticamente.\",\n  \"escopo\": \"Coleta de dados via API REST, armazenamento em BigQuery, transformação com dbt e visualização com Looker Studio.\",\n  \"estimativa_de_esforco\": \"Coleta: 5 dias, Transformação: 3 dias, Visualização: 2 dias.\",\n  \"stack_sugerida\": \"Airbyte, dbt, BigQuery, Looker Studio.\",\n  \"nome\": \"João da Silva\",\n  \"email\": \"joao@empresa.com\",\n  \"data_de_recebimento\": \"2025-07-03T14:00:00Z\",\n  \"motivo_do_contato\": \"Solicitou automação de relatórios de vendas recorrentes.\",\n  \"escopo_resumido\": \"Pipeline automatizado com dashboard integrado.\",\n  \"estimativa_resumida\": \"3 semanas de duração total estimada.\",\n  \"riscos_resumidos\": \"Instabilidade da API, ausência de documentação do ERP e possíveis limitações de acesso.\",\n  \"perguntas_para_reuniao\": \"1. O ERP atual possui documentação da API e acesso técnico disponível? 2. Existe um padrão de atualização e limpeza dos dados que devemos seguir? 3. Qual ferramenta de visualização é preferida pelo time de tomada de decisão?\",\n  \"subject\": \"Sobre sua solicitação – Projeto de Dados\",\n\"mensagem_email\": \"Olá João da Silva,\\n\\nRecebemos sua solicitação e já estamos avaliando os detalhes técnicos do seu projeto. Nossa equipe de engenharia de dados preparou uma proposta inicial com base nas informações enviadas. Em breve, entraremos em contato para alinhar próximos passos.\\n\\nAtenciosamente,\\nEquipe Red Rex\\n\\n---\\nResumo do pedido: [resumo aqui]\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        384
+      ],
+      "id": "09787a6b-4a48-4ffe-87b4-e43083c80c3c",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.mensagem_email }}",
+        "options": {
+          "sendTo": "={{ $('Gmail Trigger').item.json.headers.from }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1232,
+        352
+      ],
+      "id": "62541f9c-626f-4f43-a36e-e6dfeb39b9ca",
+      "name": "Create a draft",
+      "webhookId": "3a70381c-1ce6-4594-bca8-7ff8747272dd"
+    },
+    {
+      "parameters": {
+        "content": "## Agente que envia mensagem aos alunos automatico",
+        "height": 600,
+        "width": 1820
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        672
+      ],
+      "typeVersion": 1,
+      "id": "26802a67-c4b3-4ede-9d25-696d3d36f63c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Meu título:{{ $('Gmail Trigger').item.json.subject }}\n\nMeu texto: {{ $('Gmail Trigger').item.json.text }}\n\nMensagem: {{ $('Gmail Trigger').item.json.text }}\nSystem Message\nStructured Output\n{\n  \"subject\": \"Sobre sua solicitação – Projeto de Dados\",\n\"mensagem_email\": \"Olá João da Silva,\\n\\nRecebemos sua solicitação e já estamos avaliando os detalhes técnicos do seu projeto. Nossa equipe de engenharia de dados preparou uma proposta inicial com base nas informações enviadas. Em breve, entraremos em contato para alinhar próximos passos.\\n\\nAtenciosamente,\\nEquipe Red Rex\\n\\n---\\nResumo do pedido: [resumo aqui]\"\n}\n\n\nEmail de quem enviou: {{ $('Gmail Trigger').item.json.from.value[0].address }}\n\nNome de quem enviou: {{ $('Gmail Trigger').item.json.from.value[0].name }}\n\nData de envio: {{ $('Gmail Trigger').item.json.date }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um engenheiro de dados responsável por analisar demandas técnicas recebidas por e-mail, WhatsApp ou formulário. Sua função é interpretar essas solicitações e gerar um JSON com informações técnicas e comerciais para uso em CRM e pré-vendas.\nVocê deve gerar um único objeto JSON, com todos os campos em formato texto corrido, sem listas ou arrays, mesmo quando houver múltiplos itens.\nAlém dos campos técnicos e comerciais, inclua três perguntas importantes que devem ser feitas na primeira reunião com o cliente, para melhor entendimento do projeto.\n---\nO JSON deve conter os seguintes campos:\n- resumo: descrição técnica resumida da demanda\n- escopo: etapas técnicas propostas, descritas em texto corrido\n- estimativa_de_esforco: tempo estimado por fase do projeto (também em texto corrido)\n- stack_sugerida: ferramentas/tecnologias recomendadas, separadas por vírgula\n- nome: nome do solicitante\n- email: e-mail do solicitante\n- data_de_recebimento: data da solicitação no formato ISO\n- motivo_do_contato: qual foi o motivo inicial da solicitação\n- escopo_resumido: escopo técnico em uma frase\n- estimativa_resumida: tempo total estimado do projeto\n- riscos_resumidos: possíveis riscos ou obstáculos\n- perguntas_para_reuniao: três perguntas que devem ser feitas na primeira conversa, em uma única string com pontuação adequada\nAdicionalmente, gere dois novos campos no final do JSON:\n- subject: assunto do e-mail de resposta automática\n- mensagem_email: corpo do e-mail de resposta (em texto corrido), utilizando o nome do solicitante e o resumo do projeto\nUse um tom profissional e acolhedor.\nExemplo esperado:\n\"subject\": \"Sobre sua solicitação – Projeto de Dados\",\n\"mensagem_email\": \"Olá João da Silva,\\n\\nRecebemos sua solicitação e já estamos avaliando os detalhes técnicos do seu projeto. Nossa equipe de engenharia de dados preparou uma proposta inicial com base nas informações enviadas. Em breve, entraremos em contato para alinhar próximos passos.\\n\\nAtenciosamente,\\nEquipe Red Rex\\n\\n---\\nResumo do pedido: [resumo aqui]\"\n---\n**Formato de resposta esperado: apenas um JSON. Não inclua explicações ou quebras de linha.**\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        608,
+        752
+      ],
+      "id": "4aa020b8-b1dd-4ef2-8455-13216618cc33",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        1040
+      ],
+      "id": "65d4d63f-8ab2-4f79-a407-5e879a180516",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"subject\": \"Sobre sua solicitação – Projeto de Dados\",\n\"mensagem_email\": \"Olá João da Silva,\\n\\nRecebemos sua solicitação e já estamos avaliando os detalhes técnicos do seu projeto. Nossa equipe de engenharia de dados preparou uma proposta inicial com base nas informações enviadas. Em breve, entraremos em contato para alinhar próximos passos.\\n\\nAtenciosamente,\\nEquipe Red Rex\\n\\n---\\nResumo do pedido: [resumo aqui]\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        1040
+      ],
+      "id": "c73bd30e-324a-48da-bb6c-c92431de1b3d",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "content": "## Deletar mensagens lixo automaticamente",
+        "height": 460,
+        "width": 600,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        1312
+      ],
+      "typeVersion": 1,
+      "id": "096955d6-d40a-4add-b3e0-fa40978064dd",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Mensagem urgente vai pro whatsapp\n",
+        "height": 480,
+        "width": 1840,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        1808
+      ],
+      "typeVersion": 1,
+      "id": "a2178dba-208c-4f95-a6f2-fa84cec58242",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Data de recebimento: {{ $('Gmail Trigger').item.json.date }}\nTitulo: {{ $('Gmail Trigger').item.json.subject }}\nFrom: {{ $('Gmail Trigger').item.json.from.value[0].address }}\nMensagem: {{ $('Gmail Trigger').item.json.text }}\n",
+        "options": {
+          "systemMessage": "Você é um agente inteligente que ajuda a classificar e resumir e-mails.\nSua tarefa é:\n1. Ler o conteúdo do e-mail fornecido.\n2. Analisar se a mensagem é urgente, com base em termos como: \"erro\", \"cancelamento\", \"problema\", \"atraso\", \"urgente\", \"reclamação\", \"falha\", \"responder hoje\", \"última tentativa\".\n3. Classificar a mensagem como:\n   - URGENTE: exige atenção imediata\n   - NÃO URGENTE: pode ser lida depois\n4. Criar uma resposta curta para ser enviada via WhatsApp, contendo:\n   - A classificação de urgência\n   - Um resumo breve do e-mail\n   - Um campo “ação sugerida”\nNão usar campos especiais ou quebras como \\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1888
+      ],
+      "id": "0321847a-65c3-4b68-b423-918c3eb75211",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        2128
+      ],
+      "id": "bdb4b2b5-ad83-42ce-a179-e9baecece80c",
+      "name": "OpenAI Chat Model3"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        944,
+        2128
+      ],
+      "id": "9721728e-1a18-46e1-9e80-941d84a42f56",
+      "name": "Think1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution.jornadadedadosn8n.com/message/sendText/BotJornada",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "43B30EA985F5-43E5-9C33-CD0747398264"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"+5521969897976\",\n    \"text\": \"{{ $json.output }} titulo do e-mail: {{ $('Gmail Trigger').item.json.subject }}\"\n  } ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1152,
+        1888
+      ],
+      "id": "b860ac2c-eca5-4179-abb0-026303b27f7d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.mensagem_email }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        752
+      ],
+      "id": "5e18f90b-7328-4390-85b4-3e93b37f86fe",
+      "name": "Create a draft1",
+      "webhookId": "3a70381c-1ce6-4594-bca8-7ff8747272dd"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        1392
+      ],
+      "id": "8865beb9-fedc-4f87-b4e4-da2c1926d755",
+      "name": "Mark a message as read2",
+      "webhookId": "cfb0243c-aff7-4248-8332-a23dd45f02c8"
+    },
+    {
+      "parameters": {
+        "resource": "worksheet",
+        "operation": "append",
+        "workbook": {
+          "__rl": true,
+          "value": "01BLGSKU4QW7MJLA4P7JFISLMOYCAJZIFA",
+          "mode": "list",
+          "cachedResultName": "CRM Redrex",
+          "cachedResultUrl": "https://netorg17304047-my.sharepoint.com/personal/luciano_redrex_tech/_layouts/15/Doc.aspx?sourcedoc=%7B95D8B790-8F83-4AFA-892D-8EC0809CA0A0%7D&file=CRM%20Redrex.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1"
+        },
+        "worksheet": {
+          "__rl": true,
+          "value": "{00000000-0001-0000-0000-000000000000}",
+          "mode": "list",
+          "cachedResultName": "Planilha1",
+          "cachedResultUrl": "https://netorg17304047-my.sharepoint.com/personal/luciano_redrex_tech/_layouts/15/Doc.aspx?sourcedoc=%7B95D8B790-8F83-4AFA-892D-8EC0809CA0A0%7D&file=CRM%20Redrex.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&activeCell=Planilha1!A1"
+        },
+        "fieldsUi": {
+          "values": [
+            {
+              "column": "Coluna1",
+              "fieldValue": "={{ $json.output.resumo }}"
+            },
+            {
+              "column": "Coluna2",
+              "fieldValue": "={{ $json.output.escopo }}"
+            },
+            {
+              "column": "Coluna3",
+              "fieldValue": "={{ $json.output.estimativa_de_esforco }}"
+            },
+            {
+              "column": "Coluna4",
+              "fieldValue": "={{ $json.output.stack_sugerida }}"
+            },
+            {
+              "column": "Coluna5",
+              "fieldValue": "={{ $json.output.nome }}"
+            },
+            {
+              "column": "Coluna6",
+              "fieldValue": "={{ $json.output.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftExcel",
+      "typeVersion": 2.1,
+      "position": [
+        1232,
+        64
+      ],
+      "id": "372761a4-704d-4074-bd4b-148132a14040",
+      "name": "Append data to sheet"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "Mark a message as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message1": {
+      "main": [
+        [
+          {
+            "node": "Mark a message as read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message2": {
+      "main": [
+        [
+          {
+            "node": "Mark a message as read2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message3": {
+      "main": [
+        [
+          {
+            "node": "Mark a message as read3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark a message as read": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append data to sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark a message as read1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Create a draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark a message as read3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "888370b0-261b-4c69-8060-ec420cd4a796",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4a78af6033b712ceb86a3dfee90d77f2d2763f2fbd45618dff7eb3902d447a68"
+  },
+  "id": "LAzlas9j5myPgVHm",
+  "tags": []
+}

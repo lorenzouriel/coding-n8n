@@ -1,0 +1,383 @@
+{
+  "name": "Capture Leads Automatically via CNAE",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 7,
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e3e8f017-5abd-4710-8a8c-79eaceeec01b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "projectId": {
+          "__rl": true,
+          "value": "n8n-v1-413703",
+          "mode": "list",
+          "cachedResultName": "n8n-v1",
+          "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=n8n-v1-413703"
+        },
+        "sqlQuery": "DECLARE start_date DATE DEFAULT DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {{ $json.janela_de_dias || 7 }} DAY);\nDECLARE end_date   DATE DEFAULT CURRENT_DATE('America/Sao_Paulo');\n\nWITH src AS (\n  SELECT\n    CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv)                       AS cnpj,\n    SAFE.PARSE_DATE('%Y-%m-%d', CAST(e.data_inicio_atividade AS STRING)) AS data_inicio_atividade,\n    CAST(e.cnae_fiscal_principal AS STRING)                               AS cnae_fiscal_principal,\n    e.sigla_uf                                                            AS uf,\n    m.nome                                                                AS municipio,\n    em.razao_social,\n    em.porte                                                              AS porte_da_empresa,\n    e.cep, e.ddd_1, e.telefone_1, e.ddd_2, e.telefone_2, e.email,\n    CASE WHEN LENGTH(e.cep) = 8 THEN CONCAT(SUBSTR(e.cep,1,5), '-', SUBSTR(e.cep,6,3)) ELSE e.cep END AS cep_formatado,\n    CASE WHEN e.ddd_1 IS NOT NULL AND e.telefone_1 IS NOT NULL THEN CONCAT('(', e.ddd_1, ') ', e.telefone_1) END AS telefone1_formatado,\n    CASE WHEN e.ddd_2 IS NOT NULL AND e.telefone_2 IS NOT NULL THEN CONCAT('(', e.ddd_2, ') ', e.telefone_2) END AS telefone2_formatado,\n    ARRAY_TO_STRING(\n      ARRAY(\n        SELECT tel FROM UNNEST([\n          CASE WHEN e.ddd_1 IS NOT NULL AND e.telefone_1 IS NOT NULL THEN CONCAT('(', e.ddd_1, ') ', e.telefone_1) ELSE NULL END,\n          CASE WHEN e.ddd_2 IS NOT NULL AND e.telefone_2 IS NOT NULL THEN CONCAT('(', e.ddd_2, ') ', e.telefone_2) ELSE NULL END\n        ]) tel\n        WHERE tel IS NOT NULL\n      ), ' / '\n    ) AS telefones\n  FROM `basedosdados.br_me_cnpj.estabelecimentos` e\n  JOIN `basedosdados.br_me_cnpj.empresas` em USING (cnpj_basico)\n  LEFT JOIN `basedosdados.br_bd_diretorios_brasil.municipio` m ON e.id_municipio = m.id_municipio\n)\nSELECT\n  cnpj,\n  FORMAT_DATE('%Y-%m-%d', data_inicio_atividade) AS data_inicio_atividade,\n  cnae_fiscal_principal, uf, municipio, razao_social, porte_da_empresa,\n  cep, ddd_1, telefone_1, ddd_2, telefone_2, email,\n  cep_formatado, telefone1_formatado, telefone2_formatado, telefones\nFROM src\nWHERE data_inicio_atividade BETWEEN start_date AND end_date\n  AND cnae_fiscal_principal = '{{ $json.CNAE }}'\nORDER BY data_inicio_atividade DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "09c1796b-0c4f-4e6d-9aba-e73bc1be7c67",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "googleBigQueryOAuth2Api": {
+          "id": "nq5UKVenb4XIneQI",
+          "name": "Google BigQuery account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c172d403-9d98-45b2-82f2-c887520f0498",
+              "name": "CNAE",
+              "value": "5611201",
+              "type": "string"
+            },
+            {
+              "id": "f8f6822f-41b4-4060-8476-558370ac0d5c",
+              "name": "janela_de_dias",
+              "value": 7,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        0
+      ],
+      "id": "93c5071b-cd13-4340-baa5-254a8a2e0b03",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1FWP7qQgOqT8GVA8zJUoh7syx5YzoOxPxFeFXOisw7w8",
+          "mode": "list",
+          "cachedResultName": "cnpj_aberto_ultimos7d",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FWP7qQgOqT8GVA8zJUoh7syx5YzoOxPxFeFXOisw7w8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FWP7qQgOqT8GVA8zJUoh7syx5YzoOxPxFeFXOisw7w8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cnpj": "={{ $json.cnpj }}",
+            "data_inicio_atividade": "={{ $json.data_inicio_atividade }}",
+            "cnae_fiscal_principal": "={{ $json.cnae_fiscal_principal }}",
+            "uf": "={{ $json.uf }}",
+            "municipio": "={{ $json.municipio }}",
+            "razao_social": "={{ $json.razao_social }}",
+            "porte_da_empresa": "={{ $json.porte_da_empresa }}",
+            "cep": "={{ $json.cep }}",
+            "ddd_1": "={{ $json.ddd_1 }}",
+            "telefone_1": "={{ $json.telefone_1 }}",
+            "ddd_2": "={{ $json.ddd_2 }}",
+            "telefone_2": "={{ $json.telefone_2 }}",
+            "email": "={{ $json.email }}",
+            "cep_formatado": "={{ $json.cep_formatado }}",
+            "telefone1_formatado": "={{ $json.telefone1_formatado }}",
+            "telefone2_formatado": "={{ $json.telefone2_formatado }}",
+            "telefones": "={{ $json.telefones }}"
+          },
+          "matchingColumns": [
+            "cnpj"
+          ],
+          "schema": [
+            {
+              "id": "cnpj",
+              "displayName": "cnpj",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "data_inicio_atividade",
+              "displayName": "data_inicio_atividade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cnae_fiscal_principal",
+              "displayName": "cnae_fiscal_principal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "uf",
+              "displayName": "uf",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "municipio",
+              "displayName": "municipio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "razao_social",
+              "displayName": "razao_social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "porte_da_empresa",
+              "displayName": "porte_da_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cep",
+              "displayName": "cep",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ddd_1",
+              "displayName": "ddd_1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone_1",
+              "displayName": "telefone_1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ddd_2",
+              "displayName": "ddd_2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone_2",
+              "displayName": "telefone_2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cep_formatado",
+              "displayName": "cep_formatado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone1_formatado",
+              "displayName": "telefone1_formatado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone2_formatado",
+              "displayName": "telefone2_formatado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefones",
+              "displayName": "telefones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        784,
+        112
+      ],
+      "id": "d7d8ebcb-1820-420e-8b81-dc4f0525875e",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fikZQ4IGT3FAbWgW",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 300,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        576,
+        0
+      ],
+      "id": "3ef13bd6-af73-418a-9de1-ad4adbecca19",
+      "name": "Loop Over Items"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b835557f-5216-4962-b7ca-547fa050fffa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba24d97e004249220c0efb4d17531435ff17af8c7378dd6533d7ed245c6c4dca"
+  },
+  "id": "vNxMLeYAji9gZoTd",
+  "tags": []
+}
