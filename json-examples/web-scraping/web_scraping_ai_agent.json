@@ -1,0 +1,120 @@
+{
+  "name": "Web Scraping Agent with AI",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -160
+      ],
+      "id": "df76b459-669e-4ada-bae8-a476478f8d87",
+      "name": "When chat message received",
+      "webhookId": "ed6b59d4-0206-4a0c-8acf-c7f8a300aa76"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=Você é um agente inteligente com acesso a uma ferramenta de scraping do site www.suajornadadedados.com.\n\nSempre que receber uma pergunta relacionada à Jornada de Dados — como programação de cursos, datas de workshops, professores, trilhas, links de aulas ou eventos — utilize a ferramenta \"suajornadadedados\" para buscar a resposta diretamente do site.\n\nAo responder:\n- Retorne apenas as **3 informações mais relevantes**.\n- Comece sua resposta com: \"Pesquisa realizada em: [data atual no formato DD/MM/AAAA]\".\n- Cada item deve conter um título claro e um parágrafo objetivo.\n- Se nenhuma informação útil for encontrada, diga: \"Não encontrei informações recentes sobre esse assunto.\"\n\nNunca invente respostas. Use exclusivamente as informações reais coletadas pela ferramenta \"suajornadadedados\".\n\nData de hoje: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -160
+      ],
+      "id": "471a8ca8-5c84-497e-8ab9-af7194064b8b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        80
+      ],
+      "id": "12542f9d-3166-4658-9d0e-4f2710883adc",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "LxESPA7gaRJpmXmF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Site suajornadadedados",
+        "url": "https://suajornadadedados.com.br/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        80
+      ],
+      "id": "ae345777-4982-4ac4-9d7c-86b1ee84b617",
+      "name": "suajornadadedados"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "suajornadadedados": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aef3a329-9b1a-436f-83fe-2fc0fab49a93",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f56d2f5ba48d2ad4b177570c9770488715dd6722a50b40b69013ec823bdedd10"
+  },
+  "id": "fnPwA3YjCiKpxSv3",
+  "tags": []
+}

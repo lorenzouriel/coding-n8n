@@ -1,0 +1,242 @@
+{
+  "name": "Apify AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Rodar minha Web Scraping",
+        "height": 360,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "4b50e5ad-d1b2-41b8-8b7d-ef605f709d8b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Coletar os dados do Web Scraping",
+        "height": 360,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "61e94a69-3459-48da-96de-a9262c7fff60",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-scraper/runs/last/dataset/items?token=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "faa269e3-0b18-4d56-a064-c9a554079500",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-scraper/runs?token=",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"profileScraperMode\": \"Profile details + email search ($10 per 1k)\",\n    \"queries\": [\n        \"https://www.linkedin.com/in/lucianovasconcelosf/\",\n        \"https://www.linkedin.com/in/lucasandradesobreira/\",\n        \"https://www.linkedin.com/in/flavioghedin/\",\n        \"https://www.linkedin.com/in/lucas-henrique-s-a498b3a1/\",\n        \"https://www.linkedin.com/in/diego-evangelista-824436272/\"\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        304,
+        0
+      ],
+      "id": "e98a2ac8-51af-4d76-8a5d-746f14ee4e8e",
+      "name": "Roda meu ator"
+    },
+    {
+      "parameters": {
+        "amount": 50
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        0
+      ],
+      "id": "51ed6160-53db-4a8b-b8f7-895b010a3937",
+      "name": "Wait",
+      "webhookId": "6c1be6f9-d965-4389-bdc4-1eadf51c0e2a"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1WldXxCefv_nOLCQUAqgGIFuZ5pUyTmap1jsG4gNdLTA",
+          "mode": "list",
+          "cachedResultName": "Dados do linkedin para ligar oferecendo algo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WldXxCefv_nOLCQUAqgGIFuZ5pUyTmap1jsG4gNdLTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WldXxCefv_nOLCQUAqgGIFuZ5pUyTmap1jsG4gNdLTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome": "={{ $json.element.publicIdentifier }}",
+            "linkedinurl": "={{ $json.element.linkedinUrl }}",
+            "email": "={{ $json.element.emails[0].email }}",
+            "experiencia": "={{ $json.element.headline }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "linkedinurl",
+              "displayName": "linkedinurl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "experiencia",
+              "displayName": "experiencia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "9ea8f9d9-0f50-421c-a293-fd30b2d6f638",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jGZrBabupy9L5lUE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "e93f1393-9597-48a9-8ad1-b32042d50ba9",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roda meu ator": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Roda meu ator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0f288492-8c23-4638-8ca1-3de6259cf419",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f56d2f5ba48d2ad4b177570c9770488715dd6722a50b40b69013ec823bdedd10"
+  },
+  "id": "6ciUannyW6mdLd11",
+  "tags": []
+}

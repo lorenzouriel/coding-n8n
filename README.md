@@ -32,5 +32,3 @@ n8n/
 5. Adjust as needed for your environment!
 
 > ⚠️ Some workflows require API keys or service credentials. Set them in **Credentials** inside n8n before running.
-
-## Workflow Examples
