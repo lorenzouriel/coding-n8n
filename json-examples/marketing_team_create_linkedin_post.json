@@ -1,0 +1,459 @@
+{
+  "name": "Marketing Team",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        -64
+      ],
+      "id": "d37e0fc6-f62c-4dc4-aee2-7aef0762398e",
+      "name": "Telegram Trigger",
+      "webhookId": "a913ac17-73e7-4026-8fa6-76488fb9b4d5",
+      "credentials": {
+        "telegramApi": {
+          "id": "czaCD0yNi2czLXDt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Trigger",
+        "height": 432,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -144
+      ],
+      "id": "d65df245-fc82-465e-941e-4b09b14bcd41",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use as tools e a System Message para gerar a pesquisa com as últimas informações. Hoje é {{ $now }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Você é responsável por criar posts para o LinkedIn da empresa Earth Flow, referência em dados e previsão oceânica (ondas, marés, correntes e clima marítimo).\n\nVocê precisa linkar a seguinte ideia e aprimorar a ideia com o {{ $json.message.text }}\n\nObjetivo dos Posts\n\nComunicar de forma clara e inspiradora como a Earth Flow transforma dados do oceano em inteligência aplicada.\n\nDestacar a importância da previsão de ondas e do monitoramento oceânico para setores como navegação, logística portuária, pesca, energia renovável, turismo e segurança costeira.\n\nReforçar a imagem da empresa como inovadora, confiável e sustentável.\n\nRegras de Estilo\n\nCada parágrafo deve ter no máximo duas linhas.\n\nEscrita profissional, acessível e objetiva, sem jargões técnicos excessivos.\n\nO tom deve transmitir credibilidade, inovação e visão de futuro.\n\nUsar emojis com moderação para reforçar a mensagem (🌊 🌍 ⚡).\n\nEstrutura recomendada:\n\nAbertura curta e chamativa (frase de impacto).\n\nMensagem central (benefício ou aplicação da previsão/dados).\n\nFechamento com chamada para engajamento (ex: “E você, já pensou em como os dados do oceano podem impactar seu negócio?”).\n\nExemplos de Temas\n\nO valor da previsão de ondas para a segurança de operações offshore.\n\nComo a inteligência oceânica pode otimizar rotas de navegação.\n\nO papel dos dados em tempo real na energia renovável marítima.\n\nMonitoramento oceânico e a redução de riscos em eventos extremos.\n\nLembretes Importantes\n\nNunca escreva parágrafos longos.\n\nSempre conecte o conteúdo ao impacto real e prático para empresas, pessoas ou sociedade.\n\nPosts devem inspirar confiança e mostrar a Earth Flow como parceira estratégica para quem depende do oceano.\n\nUse o influenciador Leandro Ladeira como Exemplo e use um CAC para o link da empresa."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -64
+      ],
+      "id": "716016f5-087f-4811-bbc5-54e755af971b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        112
+      ],
+      "id": "e231df52-b96e-4999-b29a-b3959fdb5d64",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "WZk1rF3RtQ5aHlwr",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"string (título curto e chamativo, até 10 palavras)\",\n  \"post\": [\n    \"string (parágrafo 1, até 2 linhas)\",\n    \"string (parágrafo 2, até 2 linhas)\",\n    \"string (parágrafo 3, até 2 linhas - opcional)\"\n  ],\n  \"hashtags\": [\"#EarthFlow\", \"#PrevisãoDeOndas\", \"#OceanData\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        112
+      ],
+      "id": "46aef585-486f-4b93-94dd-aa92965b1679",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "content": "## Cria Posts",
+        "height": 432,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -144
+      ],
+      "id": "096e4695-5cde-4c24-a141-69d6464eb9ec",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Gera o Post",
+        "height": 432,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -144
+      ],
+      "id": "968672b3-ff98-49a8-acbf-b110a2d46141",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Gere um conteúdo em HTML a partir dos dados JSON fornecidos, seguindo os requisitos:\n\nO HTML deve ser moderno, minimalista e limpo.\n\nUtilize layout baseado em tabelas com CSS inline, garantindo compatibilidade com clientes de e-mail.\n\nNão incluir <html>, <head>, <body>, comentários ou scripts.\n\nCada seção do JSON deve ser convertida em blocos visuais bem organizados, com destaque em títulos e espaçamento adequado.\n\nO texto deve ser legível, com font-family Arial, sans-serif, tamanhos de fonte proporcionais e cores suaves.\n\nUtilize cores neutras (#ffffff para fundo, #333333 para texto, e #0077b6 para destaques).\n\nOs botões ou links devem ser renderizados como call-to-action (CTA) em botões com cantos arredondados, cor de fundo azul (#0077b6) e texto branco.\n\nRespeite a hierarquia dos dados do JSON, exibindo título, texto, listas ou botões conforme presentes.\n\nDados de entrada (JSON):\n{{ $json.output.toJsonString() }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        -64
+      ],
+      "id": "39bb82d2-fca2-493b-9be4-3af4eb2d8b65",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ffe7daa2-fbda-4c61-ac44-83b4d2adda51",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0e0f95c7-c30f-4a01-9209-ce2523688960",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        -64
+      ],
+      "id": "4c620299-0fda-41bf-b5cd-353e4ff52fe5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Crie uma imagem moderna e futurista representando uma empresa de previsão de ondas. Mostre um oceano dinâmico com ondas estilizadas em azul e verde água, combinadas com elementos de dados digitais como gráficos transparentes, linhas de previsão e símbolos tecnológicos flutuando sobre o mar. Inclua um céu claro com satélites e sensores discretos, sugerindo monitoramento climático. O estilo deve ser corporativo, minimalista e científico, transmitindo precisão, inovação e sustentabilidade.\n\nTexto associado ao post: {{ $('AI Agent').item.json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1808,
+        -80
+      ],
+      "id": "51b52d4b-41b9-4ebc-a220-145f3d823bb9",
+      "name": "Generate an image",
+      "credentials": {
+        "openAiApi": {
+          "id": "8FMSP9ZWV6Az3H66",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        784,
+        128
+      ],
+      "id": "548140dd-0aa0-4733-9d6b-da62a2669a4d",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "WZk1rF3RtQ5aHlwr",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## APROVA POST E GERA IMAGEM",
+        "height": 432,
+        "width": 688
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -144
+      ],
+      "id": "e38fcf5d-8910-4963-8ed3-09a3ddeee94e",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "earthflow42@gmail.com",
+        "subject": "POST",
+        "message": "={{ $json.output }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 90,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        -64
+      ],
+      "id": "01286c26-fb40-44e0-a2cb-8ee3a29743cd",
+      "name": "Send message and wait for response",
+      "webhookId": "c8c1c374-4f07-4a76-ac59-e4460dbc1fdf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rGL4RpqAdiWJ30gU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "postAs": "organization",
+        "text": "={{ $('AI Agent').item.json.output.title }}{{ $('AI Agent').item.json.output.post }} {{ $('AI Agent').item.json.output.hashtags }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        -80
+      ],
+      "id": "3574e526-0c8d-405f-8c20-5bda169d9214",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "RvahLwidrml46giB",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## FAÇA O POST",
+        "height": 432,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -144
+      ],
+      "id": "1019a211-ebba-42e0-8a41-31a2706bab18",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.fileName }} + {{ $now }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2160,
+        112
+      ],
+      "id": "88b3ccf5-7587-4409-8fe0-cf2f1515ebcd",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "b4ObYVWUisLMmlN8",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1e8ed232-5de4-42e1-b45c-8fafe9593040",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4a78af6033b712ceb86a3dfee90d77f2d2763f2fbd45618dff7eb3902d447a68"
+  },
+  "id": "m44slizFgSuqqv2D",
+  "tags": []
+}
